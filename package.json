@@ -1,5 +1,12 @@
 {
-  "dependencies": {
-    "json-server": "^1.0.0-beta.5"
-  }
+  "name": "proyecto-integrador-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
