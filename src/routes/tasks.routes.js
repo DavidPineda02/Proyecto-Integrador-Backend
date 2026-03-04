@@ -1,5 +1,5 @@
-// Define task-related routes. Function takes the Express app instance.
-export const Tasks = (app) => {
+// define task-related routes. function takes the express app instance.
+export const tasks = (app) => {
     app.get('/tasks', (req, res) => {
         res.send('Ruta de tareas - se listarán las tareas');
     });
