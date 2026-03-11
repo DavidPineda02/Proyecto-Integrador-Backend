@@ -1,5 +1,5 @@
-let users = [];
+import { usersDatabase } from './database.js';
 
 export const findAllModel = async () => {
-    return users;
+    return usersDatabase;
 };

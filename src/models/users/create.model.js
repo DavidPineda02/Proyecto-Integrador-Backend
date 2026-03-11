@@ -1,4 +1,4 @@
-let users = [];
+import { usersDatabase } from './database.js';
 
 const generateUserId = () => {
     return Date.now().toString();
@@ -18,7 +18,7 @@ export const createModel = async (userData) => {
         throw new Error('Formato de email inválido');
     }
     
-    const existingUser = users.find(user => user.email === userData.email);
+    const existingUser = usersDatabase.find(user => user.email === userData.email);
     if (existingUser) {
         throw new Error('El email ya existe');
     }
@@ -33,7 +33,7 @@ export const createModel = async (userData) => {
         updatedAt: new Date().toISOString()
     };
     
-    users.push(newUser);
+    usersDatabase.push(newUser);
     
     return newUser;
 };

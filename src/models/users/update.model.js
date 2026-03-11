@@ -1,4 +1,4 @@
-let users = [];
+import { usersDatabase } from './database.js';
 
 const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -6,7 +6,7 @@ const validateEmail = (email) => {
 };
 
 export const updateModel = async (id, userData) => {
-    const userIndex = users.findIndex(user => user.id === id);
+    const userIndex = usersDatabase.findIndex(user => user.id === id);
     
     if (userIndex === -1) {
         throw new Error('Usuario no encontrado');
@@ -17,19 +17,19 @@ export const updateModel = async (id, userData) => {
     }
     
     if (userData.email) {
-        const existingUser = users.find(user => user.email === userData.email && user.id !== id);
+        const existingUser = usersDatabase.find(user => user.email === userData.email && user.id !== id);
         if (existingUser) {
             throw new Error('El email ya existe');
         }
     }
     
     const updatedUser = {
-        ...users[userIndex],
+        ...usersDatabase[userIndex],
         ...userData,
         updatedAt: new Date().toISOString()
     };
     
-    users[userIndex] = updatedUser;
+    usersDatabase[userIndex] = updatedUser;
     
     return updatedUser;
 };
