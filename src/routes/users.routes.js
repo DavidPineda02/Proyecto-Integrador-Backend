@@ -1,11 +1,14 @@
-// define user-related routes. function takes the express app instance.
-export const users = (app) => {
-    app.get('/users', (req, res) => {
-        res.send('Ruta de usuarios - se listarán los usuarios');
-    });
+import express from 'express'
+import { create, getAll, getById, update, updateStatus, deleteUser } from '../controllers/index.controller.js';
 
-    app.post('/users', (req, res) => {
-        res.send('Ruta de usuarios - se creará un nuevo usuario');
-    });
-};
+const routesUsers = express.Router()
 
+// Endpoints CRUD para usuarios
+routesUsers.post('/users', create);
+routesUsers.get('/users', getAll);
+routesUsers.get('/users/:id', getById);
+routesUsers.put('/users/:id', update);
+routesUsers.patch('/users/:id/status', updateStatus);
+routesUsers.delete('/users/:id', deleteUser);
+
+export default routesUsers;

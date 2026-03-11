@@ -1,16 +1,14 @@
 import express from 'express';
+import routesUsers from './routes/users.routes.js';
 
 const app = express();
 const PORT = 3000;
 
-// import route setup functions (named exports)
-import { users } from './routes/users.routes.js';
-import { tasks } from './routes/tasks.routes.js';
+// Middleware para parsear bodies JSON
+app.use(express.json());
 
-// register routes with the app
-users(app);
-tasks(app);
+app.use('/api', routesUsers)
 
 app.listen(PORT, () => {
-  console.log(`backend listening on port ${PORT}`)
+  console.log(`backend escuchando en el puerto ${PORT}`)
 })
