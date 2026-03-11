@@ -1,4 +1,4 @@
-import { UserModel } from '../../models/users/index.models.js';
+import { UserModel } from '../../models/index.models.js';
 
 export const update = async (req, res) => {
     try {
