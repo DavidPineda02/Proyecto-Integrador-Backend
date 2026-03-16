@@ -1,6 +1,12 @@
 import { TaskModel } from '../../models/index.models.js';
 import { sendErrorResponse } from '../utils.js';
 
+/**
+ * Cambia el progreso de una tarea entre pendiente, en curso y completada.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 export const updateTaskStatus = async (req, res) => {
     try {
         const { taskId } = req.params;

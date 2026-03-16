@@ -1,6 +1,14 @@
 import { TaskModel } from '../../models/index.models.js';
 import { sendErrorResponse } from '../utils.js';
 
+/**
+ * Normaliza parametros opcionales de query para reutilizar el mismo criterio
+ * de filtrado aunque lleguen con espacios o en distintas variantes.
+ *
+ * @param {unknown} value
+ * @param {{ lowerCase?: boolean }} [options]
+ * @returns {string | undefined}
+ */
 const normalizeQueryValue = (value, { lowerCase = false } = {}) => {
     if (value === undefined) {
         return undefined;
@@ -11,6 +19,13 @@ const normalizeQueryValue = (value, { lowerCase = false } = {}) => {
     return lowerCase ? normalizedValue.toLowerCase() : normalizedValue;
 };
 
+/**
+ * Filtra tareas por usuario asignado, estado y prioridad.
+ * Acepta aliases de query como user/usuario y estado/prioridad.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 export const filterTasks = async (req, res) => {
     try {
         const userId = normalizeQueryValue(req.query.userId ?? req.query.user ?? req.query.usuario);

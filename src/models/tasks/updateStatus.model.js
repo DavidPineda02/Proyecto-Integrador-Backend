@@ -2,6 +2,13 @@ import { tasksDatabase } from '../database.js';
 import { createModelError } from '../errors.js';
 import { VALID_TASK_STATUSES } from './helpers.js';
 
+/**
+ * Cambia exclusivamente el progreso de una tarea.
+ *
+ * @param {string} id
+ * @param {string} status
+ * @returns {Promise<object>}
+ */
 export const updateTaskStatusModel = async (id, status) => {
     const normalizedStatus = status?.trim().toLowerCase();
 

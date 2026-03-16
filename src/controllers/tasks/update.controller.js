@@ -1,6 +1,13 @@
 import { TaskModel } from '../../models/index.models.js';
 import { sendErrorResponse } from '../utils.js';
 
+/**
+ * Actualiza los datos editables de una tarea y permite reemplazar la lista
+ * completa de usuarios asignados.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 export const updateTask = async (req, res) => {
     try {
         const { taskId } = req.params;

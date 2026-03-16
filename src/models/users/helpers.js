@@ -2,12 +2,25 @@ import { createModelError } from '../errors.js';
 
 export const VALID_USER_STATUSES = ['activo', 'inactivo', 'suspendido', 'eliminado'];
 
+/**
+ * Valida el formato general del correo sin depender de persistencia externa.
+ *
+ * @param {string} email
+ * @returns {boolean}
+ */
 export const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     return emailRegex.test(email);
 };
 
+/**
+ * Limpia y homogeneiza los campos de entrada del usuario antes de validarlos
+ * o persistirlos.
+ *
+ * @param {Record<string, any>} userData
+ * @returns {Record<string, any>}
+ */
 export const normalizeUserPayload = (userData) => {
     const normalizedData = {};
 
@@ -30,6 +43,14 @@ export const normalizeUserPayload = (userData) => {
     return normalizedData;
 };
 
+/**
+ * Aplica reglas de negocio compartidas para creacion y actualizacion de
+ * usuarios.
+ *
+ * @param {Record<string, any>} userData
+ * @param {{ partial?: boolean }} [options]
+ * @returns {Record<string, any>}
+ */
 export const validateUserPayload = (userData, { partial = false } = {}) => {
     const normalizedData = normalizeUserPayload(userData);
 

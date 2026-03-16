@@ -1,3 +1,7 @@
+/**
+ * Barrel de controladores.
+ * Centraliza las importaciones para que las rutas consuman una sola fuente.
+ */
 import { create } from './users/create.controller.js';
 import { getAll } from './users/findAll.controller.js';
 import { getById } from './users/findById.controller.js';

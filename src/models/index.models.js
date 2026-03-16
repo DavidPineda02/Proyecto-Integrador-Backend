@@ -1,3 +1,8 @@
+/**
+ * Barrel de modelos.
+ * Expone una interfaz estable para usuarios y tareas sin acoplar controladores
+ * a archivos internos concretos.
+ */
 import { createModel } from './users/create.model.js';
 import { findAllModel } from './users/findAll.model.js';
 import { findByIdModel } from './users/findById.model.js';

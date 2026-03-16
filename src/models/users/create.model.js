@@ -4,6 +4,13 @@ import { validateUserPayload } from './helpers.js';
 
 const generateUserId = () => `${Date.now()}${Math.floor(Math.random() * 1000)}`;
 
+/**
+ * Inserta un nuevo usuario en la base en memoria validando campos obligatorios
+ * y unicidad del correo.
+ *
+ * @param {Record<string, any>} userData
+ * @returns {Promise<object>}
+ */
 export const createModel = async (userData) => {
     const normalizedData = validateUserPayload(userData);
 
