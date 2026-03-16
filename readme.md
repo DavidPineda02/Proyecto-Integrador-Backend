@@ -12,12 +12,35 @@ Este repositorio contiene un servidor Express inicial con rutas de ejemplo que s
 ├── readme.md               # este documento
 └── src/
     ├── main.js             # punto de entrada de la aplicación
-    └── routes/
-        ├── users.routes.js # rutas de usuarios (GET, POST)
-        └── tasks.routes.js # rutas de tareas (GET, POST)
+    ├── controllers/        # lógica HTTP por módulo
+    ├── models/             # acceso a datos en memoria y reglas de negocio
+    └── routes/             # definición de endpoints
 ```
 
-> Las rutas actualmente devuelven mensajes simples en español para indicar su propósito.
+## 🔌 Endpoints disponibles
+
+### Usuarios
+- `POST /api/users`
+- `GET /api/users`
+- `GET /api/users/:userId`
+- `PUT /api/users/:userId`
+- `PATCH /api/users/:userId/status`
+- `DELETE /api/users/:userId`
+- `GET /api/users/:userId/tasks`
+
+### Tareas
+- `POST /api/tasks`
+- `GET /api/tasks`
+- `GET /api/tasks/:taskId`
+- `PUT /api/tasks/:taskId`
+- `DELETE /api/tasks/:taskId`
+- `PATCH /api/tasks/:taskId/status`
+- `POST /api/tasks/:taskId/assign`
+- `GET /api/tasks/filter`
+
+## 🔁 Relación usuarios-tareas
+
+Las tareas ahora soportan asignación múltiple mediante el campo `assignedUserIds`, lo que permite que una misma tarea pertenezca a varios usuarios al mismo tiempo.
 
 ## ⚙️ Cómo ejecutar el servidor
 1. Asegúrate de tener Node.js instalado (versión 18+ recomendada).
@@ -41,4 +64,4 @@ Este repositorio contiene un servidor Express inicial con rutas de ejemplo que s
 
 1. Keiner Fabian Arismendy
 2. Julian Andres Sanchez
-3. Yedher David Pineda 
+3. Yedher David Pineda

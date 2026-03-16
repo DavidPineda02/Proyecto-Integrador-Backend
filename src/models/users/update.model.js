@@ -1,35 +1,32 @@
 import { usersDatabase } from './database.js';
-
-const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-};
-
+import { createModelError } from '../errors.js';
+import { validateUserPayload } from './helpers.js';
 export const updateModel = async (id, userData) => {
-    const userIndex = usersDatabase.findIndex(user => user.id === id);
-    
+    const userIndex = usersDatabase.findIndex((user) => user.id === id);
+
     if (userIndex === -1) {
-        throw new Error('Usuario no encontrado');
+        throw createModelError('Usuario no encontrado', 404);
     }
-    
-    if (userData.email && !validateEmail(userData.email)) {
-        throw new Error('Formato de email inválido');
-    }
-    
-    if (userData.email) {
-        const existingUser = usersDatabase.find(user => user.email === userData.email && user.id !== id);
+
+    const normalizedData = validateUserPayload(userData, { partial: true });
+
+    if (normalizedData.email) {
+        const existingUser = usersDatabase.find(
+            (user) => user.email === normalizedData.email && user.id !== id
+        );
+
         if (existingUser) {
-            throw new Error('El email ya existe');
+            throw createModelError('El email ya existe');
         }
     }
-    
+
     const updatedUser = {
         ...usersDatabase[userIndex],
-        ...userData,
+        ...normalizedData,
         updatedAt: new Date().toISOString()
     };
-    
+
     usersDatabase[userIndex] = updatedUser;
-    
+
     return updatedUser;
 };
