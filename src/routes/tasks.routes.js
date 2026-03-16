@@ -1,11 +1,25 @@
-// define task-related routes. function takes the express app instance.
-export const tasks = (app) => {
-    app.get('/tasks', (req, res) => {
-        res.send('Ruta de tareas - se listarán las tareas');
-    });
+import express from 'express';
+import {
+    assignUsersToTask,
+    createTask,
+    deleteTask,
+    filterTasks,
+    getAllTasks,
+    getTaskById,
+    updateTask,
+    updateTaskStatus
+} from '../controllers/index.controller.js';
 
-    app.post('/tasks', (req, res) => {
-        res.send('Ruta de tareas - se creará una nueva tarea');
-    });
-};
+// Rutas del modulo de tareas
+const routesTasks = express.Router();
 
+routesTasks.get('/tasks/filter', filterTasks);
+routesTasks.post('/tasks/:taskId/assign', assignUsersToTask);
+routesTasks.patch('/tasks/:taskId/status', updateTaskStatus);
+routesTasks.post('/tasks', createTask);
+routesTasks.get('/tasks', getAllTasks);
+routesTasks.get('/tasks/:taskId', getTaskById);
+routesTasks.put('/tasks/:taskId', updateTask);
+routesTasks.delete('/tasks/:taskId', deleteTask);
+
+export default routesTasks;

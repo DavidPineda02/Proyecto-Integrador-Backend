@@ -1,3 +1,2 @@
-let users = [];
-
-export const usersDatabase = users;
+// Reexport para mantener la estructura del modulo de usuarios.
+export { usersDatabase } from '../database.js';
