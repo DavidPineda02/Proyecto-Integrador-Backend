@@ -3,12 +3,7 @@ import { createModelError } from '../errors.js';
 import { validateTaskPayload } from './helpers.js';
 
 const generateTaskId = () => `${Date.now()}${Math.floor(Math.random() * 1000)}`;
-
-/**
- * Verifica que todos los usuarios a asignar existan antes de crear la tarea.
- *
- * @param {string[]} userIds
- */
+// Verifica que los usuarios a asignar existan antes de crear la tarea.
 const validateUsersExist = (userIds) => {
     const missingUserIds = userIds.filter(
         (userId) => !usersDatabase.some((user) => user.id === userId)
@@ -19,12 +14,6 @@ const validateUsersExist = (userIds) => {
     }
 };
 
-/**
- * Crea una nueva tarea con prioridad, estado y asignaciones iniciales.
- *
- * @param {Record<string, any>} taskData
- * @returns {Promise<object>}
- */
 export const createTaskModel = async (taskData) => {
     const normalizedData = validateTaskPayload(taskData);
     const assignedUserIds = normalizedData.assignedUserIds || [];

@@ -1,12 +1,5 @@
 import { TaskModel, UserModel } from '../../models/index.models.js';
 import { sendErrorResponse } from '../utils.js';
-
-/**
- * Devuelve la vista personal de tareas asignadas a un usuario.
- *
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
 export const getUserTasks = async (req, res) => {
     try {
         const { userId } = req.params;

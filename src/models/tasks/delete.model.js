@@ -1,12 +1,5 @@
 import { tasksDatabase } from '../database.js';
 import { createModelError } from '../errors.js';
-
-/**
- * Elimina una tarea por id.
- *
- * @param {string} id
- * @returns {Promise<object>}
- */
 export const deleteTaskModel = async (id) => {
     const taskIndex = tasksDatabase.findIndex((task) => task.id === id);
 

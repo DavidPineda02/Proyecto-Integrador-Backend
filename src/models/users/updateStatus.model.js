@@ -1,14 +1,6 @@
 import { usersDatabase } from './database.js';
 import { createModelError } from '../errors.js';
 import { VALID_USER_STATUSES } from './helpers.js';
-
-/**
- * Cambia solo el estado administrativo del usuario.
- *
- * @param {string} id
- * @param {string} status
- * @returns {Promise<object>}
- */
 export const updateStatusModel = async (id, status) => {
     const normalizedStatus = status?.trim().toLowerCase();
 

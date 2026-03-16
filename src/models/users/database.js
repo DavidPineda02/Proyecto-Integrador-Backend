@@ -1,2 +1,2 @@
-// Reexport temporal para conservar la estructura del modulo de usuarios.
+// Reexport para mantener la estructura del modulo de usuarios.
 export { usersDatabase } from '../database.js';

@@ -9,10 +9,7 @@ import {
     deleteUser
 } from '../controllers/index.controller.js';
 
-/**
- * Router del modulo de usuarios.
- * Agrupa las rutas administrativas y la vista personal de tareas.
- */
+// Rutas del modulo de usuarios
 const routesUsers = express.Router()
 
 // Endpoints CRUD para usuarios

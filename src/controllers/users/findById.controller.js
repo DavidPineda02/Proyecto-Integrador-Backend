@@ -1,12 +1,5 @@
 import { UserModel } from '../../models/index.models.js';
 import { sendErrorResponse } from '../utils.js';
-
-/**
- * Busca un usuario por su identificador.
- *
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
 export const getById = async (req, res) => {
     try {
         const { userId } = req.params;

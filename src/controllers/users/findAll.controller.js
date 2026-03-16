@@ -1,12 +1,5 @@
 import { UserModel } from '../../models/index.models.js';
 import { sendErrorResponse } from '../utils.js';
-
-/**
- * Retorna la lista completa de usuarios registrados en memoria.
- *
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
 export const getAll = async (req, res) => {
     try {
         const users = await UserModel.findAll();

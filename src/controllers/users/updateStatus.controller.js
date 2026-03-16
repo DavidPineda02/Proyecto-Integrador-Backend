@@ -1,13 +1,5 @@
 import { TaskModel, UserModel } from '../../models/index.models.js';
 import { sendErrorResponse } from '../utils.js';
-
-/**
- * Actualiza el estado administrativo de un usuario.
- * Si el usuario queda como eliminado, se retira de las tareas asignadas.
- *
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
 export const updateStatus = async (req, res) => {
     try {
         const { userId } = req.params;
@@ -23,6 +15,7 @@ export const updateStatus = async (req, res) => {
         const updatedUser = await UserModel.updateStatus(userId, status);
 
         if (updatedUser.status === 'eliminado') {
+            // Si el usuario queda eliminado, se saca de las tareas asignadas.
             await TaskModel.removeUserAssignments(userId);
         }
 

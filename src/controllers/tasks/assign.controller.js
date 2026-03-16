@@ -1,12 +1,5 @@
 import { TaskModel } from '../../models/index.models.js';
 import { sendErrorResponse } from '../utils.js';
-
-/**
- * Agrega uno o varios usuarios a una tarea existente sin duplicar ids.
- *
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
 export const assignUsersToTask = async (req, res) => {
     try {
         const { taskId } = req.params;

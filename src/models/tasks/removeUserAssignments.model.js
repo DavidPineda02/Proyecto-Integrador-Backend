@@ -1,12 +1,4 @@
 import { tasksDatabase } from '../database.js';
-
-/**
- * Quita un usuario de todas las tareas donde estuviera asignado.
- * Es util al eliminar usuarios o marcarlos como eliminados.
- *
- * @param {string} userId
- * @returns {Promise<number>}
- */
 export const removeUserAssignmentsModel = async (userId) => {
     let updatedTasks = 0;
 
@@ -15,6 +7,7 @@ export const removeUserAssignmentsModel = async (userId) => {
             return;
         }
 
+        // Elimina al usuario de la lista de asignados de la tarea.
         task.assignedUserIds = task.assignedUserIds.filter(
             (assignedUserId) => assignedUserId !== userId
         );

@@ -1,15 +1,6 @@
 import { tasksDatabase, usersDatabase } from '../database.js';
 import { createModelError } from '../errors.js';
 import { validateAssignedUserIds } from './helpers.js';
-
-/**
- * Agrega varios usuarios a una tarea existente.
- * Si alguno ya estaba asignado, se conserva una sola vez.
- *
- * @param {string} taskId
- * @param {unknown[]} userIds
- * @returns {Promise<object>}
- */
 export const assignUsersToTaskModel = async (taskId, userIds) => {
     const normalizedUserIds = validateAssignedUserIds(userIds);
 
@@ -31,6 +22,7 @@ export const assignUsersToTaskModel = async (taskId, userIds) => {
         throw createModelError(`Usuarios no encontrados: ${missingUserIds.join(', ')}`, 404);
     }
 
+    // Une los usuarios actuales con los nuevos sin repetir ids.
     const mergedUserIds = [...new Set([
         ...tasksDatabase[taskIndex].assignedUserIds,
         ...normalizedUserIds

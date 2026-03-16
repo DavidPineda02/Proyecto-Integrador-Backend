@@ -1,14 +1,9 @@
 import { createModelError } from '../errors.js';
 
+// Estados y prioridades permitidas para las tareas.
 export const VALID_TASK_STATUSES = ['pendiente', 'en curso', 'completada'];
 export const VALID_TASK_PRIORITIES = ['baja', 'media', 'alta'];
 
-/**
- * Limpia valores de texto manteniendo intactos los tipos no string.
- *
- * @param {unknown} value
- * @returns {unknown}
- */
 const normalizeStringField = (value) => {
     if (typeof value !== 'string') {
         return value;
@@ -17,13 +12,7 @@ const normalizeStringField = (value) => {
     return value.trim();
 };
 
-/**
- * Normaliza el payload de tareas para centralizar el formato esperado antes de
- * aplicar validaciones o persistencia.
- *
- * @param {Record<string, any>} taskData
- * @returns {Record<string, any>}
- */
+// Limpia y normaliza los datos de entrada de la tarea.
 export const normalizeTaskPayload = (taskData) => {
     const normalizedData = {};
 
@@ -50,12 +39,7 @@ export const normalizeTaskPayload = (taskData) => {
     return normalizedData;
 };
 
-/**
- * Convierte la lista de usuarios asignados en ids string unicos y sin vacios.
- *
- * @param {unknown[]} assignedUserIds
- * @returns {string[]}
- */
+// Deja la lista de usuarios asignados sin ids repetidos ni vacios.
 export const validateAssignedUserIds = (assignedUserIds) => {
     if (!Array.isArray(assignedUserIds)) {
         throw createModelError('assignedUserIds debe ser un arreglo de IDs de usuario');
@@ -68,13 +52,7 @@ export const validateAssignedUserIds = (assignedUserIds) => {
     )];
 };
 
-/**
- * Valida la informacion de entrada de una tarea para creacion o actualizacion.
- *
- * @param {Record<string, any>} taskData
- * @param {{ partial?: boolean }} [options]
- * @returns {Record<string, any>}
- */
+// Reglas compartidas para crear o actualizar tareas.
 export const validateTaskPayload = (taskData, { partial = false } = {}) => {
     const normalizedData = normalizeTaskPayload(taskData);
 

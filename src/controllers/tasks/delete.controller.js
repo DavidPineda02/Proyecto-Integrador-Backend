@@ -1,12 +1,5 @@
 import { TaskModel } from '../../models/index.models.js';
 import { sendErrorResponse } from '../utils.js';
-
-/**
- * Elimina una tarea por id.
- *
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
 export const deleteTask = async (req, res) => {
     try {
         const { taskId } = req.params;

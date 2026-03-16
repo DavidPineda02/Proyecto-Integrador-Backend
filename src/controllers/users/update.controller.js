@@ -1,12 +1,5 @@
 import { UserModel } from '../../models/index.models.js';
 import { sendErrorResponse } from '../utils.js';
-
-/**
- * Reemplaza los datos editables de un usuario conservando su id y fechas base.
- *
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
 export const update = async (req, res) => {
     try {
         const { userId } = req.params;

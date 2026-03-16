@@ -1,12 +1,5 @@
 import { TaskModel } from '../../models/index.models.js';
 import { sendErrorResponse } from '../utils.js';
-
-/**
- * Retorna la coleccion completa de tareas.
- *
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
 export const getAllTasks = async (req, res) => {
     try {
         const tasks = await TaskModel.findAll();

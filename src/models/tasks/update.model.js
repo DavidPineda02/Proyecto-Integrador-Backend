@@ -1,15 +1,6 @@
 import { tasksDatabase, usersDatabase } from '../database.js';
 import { createModelError } from '../errors.js';
 import { validateTaskPayload } from './helpers.js';
-
-/**
- * Actualiza parcialmente una tarea existente.
- * Si el payload incluye assignedUserIds, estos reemplazan la lista anterior.
- *
- * @param {string} id
- * @param {Record<string, any>} taskData
- * @returns {Promise<object>}
- */
 export const updateTaskModel = async (id, taskData) => {
     const taskIndex = tasksDatabase.findIndex((task) => task.id === id);
 

@@ -1,12 +1,6 @@
 import { readFileSync } from 'node:fs';
 
-/**
- * Carga la semilla inicial desde db.json.
- * Mientras no exista una base de datos real, este archivo funciona como origen
- * de datos para poblar los arreglos en memoria al iniciar la app.
- *
- * @returns {{ users: Array<object>, tasks: Array<object> }}
- */
+// Carga los datos iniciales desde db.json.
 const loadSeedData = () => {
     try {
         const databaseFile = new URL('../../db.json', import.meta.url);
@@ -23,13 +17,7 @@ const loadSeedData = () => {
 
 const seedData = loadSeedData();
 
-/**
- * Normaliza los registros de usuario para que todos compartan el mismo shape
- * independientemente de como vengan desde la semilla.
- *
- * @param {Record<string, any>} user
- * @returns {object}
- */
+// Normaliza los usuarios cargados desde la semilla.
 const normalizeUser = (user) => {
     const timestamp = new Date().toISOString();
 
@@ -44,12 +32,7 @@ const normalizeUser = (user) => {
     };
 };
 
-/**
- * Normaliza los registros de tarea y elimina ids de usuario repetidos.
- *
- * @param {Record<string, any>} task
- * @returns {object}
- */
+// Normaliza las tareas y evita ids repetidos en las asignaciones.
 const normalizeTask = (task) => {
     const timestamp = new Date().toISOString();
 
@@ -67,7 +50,7 @@ const normalizeTask = (task) => {
     };
 };
 
-// Estos arreglos simulan la persistencia compartida por toda la aplicacion.
+// Estos arreglos simulan la base de datos en memoria.
 export const usersDatabase = Array.isArray(seedData.users)
     ? seedData.users.map(normalizeUser)
     : [];

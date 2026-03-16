@@ -1,15 +1,6 @@
 import { usersDatabase } from './database.js';
 import { createModelError } from '../errors.js';
 import { validateUserPayload } from './helpers.js';
-
-/**
- * Actualiza parcialmente un usuario existente manteniendo la validacion
- * compartida y la unicidad del correo.
- *
- * @param {string} id
- * @param {Record<string, any>} userData
- * @returns {Promise<object>}
- */
 export const updateModel = async (id, userData) => {
     const userIndex = usersDatabase.findIndex((user) => user.id === id);
 

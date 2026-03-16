@@ -1,12 +1,5 @@
 import { UserModel } from '../../models/index.models.js';
 import { sendErrorResponse } from '../utils.js';
-
-/**
- * Crea un usuario nuevo a partir del body recibido por la API.
- *
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
 export const create = async (req, res) => {
     try {
         const { firstName, lastName, email, status } = req.body;

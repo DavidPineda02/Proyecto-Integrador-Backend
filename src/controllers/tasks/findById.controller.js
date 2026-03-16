@@ -1,12 +1,5 @@
 import { TaskModel } from '../../models/index.models.js';
 import { sendErrorResponse } from '../utils.js';
-
-/**
- * Busca una tarea puntual por su id.
- *
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
 export const getTaskById = async (req, res) => {
     try {
         const { taskId } = req.params;

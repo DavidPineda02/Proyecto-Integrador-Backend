@@ -10,10 +10,7 @@ import {
     updateTaskStatus
 } from '../controllers/index.controller.js';
 
-/**
- * Router del modulo de tareas.
- * Expone CRUD, filtrado, asignacion multiple y cambio de progreso.
- */
+// Rutas del modulo de tareas
 const routesTasks = express.Router();
 
 routesTasks.get('/tasks/filter', filterTasks);

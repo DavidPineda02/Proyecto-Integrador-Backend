@@ -1,8 +1,5 @@
-/**
- * Punto de entrada de la API.
- * Exporta la app para reutilizarla en pruebas o futuras integraciones
- * y solo levanta el servidor cuando este archivo se ejecuta directamente.
- */
+// Punto de entrada de la API.
+// Se exporta app para poder reutilizarla en pruebas.
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -12,7 +9,7 @@ import routesTasks from './routes/tasks.routes.js';
 export const app = express();
 const PORT = 3000;
 
-// Habilita la lectura de cuerpos JSON enviados por el cliente.
+// Middleware para parsear bodies JSON
 app.use(express.json());
 
 app.use('/api', routesUsers);
