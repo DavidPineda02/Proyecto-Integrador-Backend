@@ -1,39 +1,27 @@
 import { usersDatabase } from './database.js';
+import { createModelError } from '../errors.js';
+import { validateUserPayload } from './helpers.js';
 
-const generateUserId = () => {
-    return Date.now().toString();
-};
-
-const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-};
+const generateUserId = () => `${Date.now()}${Math.floor(Math.random() * 1000)}`;
 
 export const createModel = async (userData) => {
-    if (!userData.firstName || !userData.lastName || !userData.email) {
-        throw new Error('Faltan campos requeridos: firstName, lastName, email');
-    }
-    
-    if (!validateEmail(userData.email)) {
-        throw new Error('Formato de email inválido');
-    }
-    
-    const existingUser = usersDatabase.find(user => user.email === userData.email);
+    const normalizedData = validateUserPayload(userData);
+
+    const existingUser = usersDatabase.find((user) => user.email === normalizedData.email);
     if (existingUser) {
-        throw new Error('El email ya existe');
+        throw createModelError('El email ya existe');
     }
-    
+
+    const timestamp = new Date().toISOString();
     const newUser = {
         id: generateUserId(),
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        email: userData.email,
-        status: userData.status || 'active',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        ...normalizedData,
+        status: normalizedData.status || 'activo',
+        createdAt: timestamp,
+        updatedAt: timestamp
     };
-    
+
     usersDatabase.push(newUser);
-    
+
     return newUser;
 };

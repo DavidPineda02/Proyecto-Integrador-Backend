@@ -1,3 +1,1 @@
-let users = [];
-
-export const usersDatabase = users;
+export { usersDatabase } from '../database.js';
