@@ -32,15 +32,32 @@ Este repositorio contiene un servidor Express inicial con rutas de ejemplo que s
 - `POST /api/tasks`
 - `GET /api/tasks`
 - `GET /api/tasks/:taskId`
+- `GET /api/tasks/:taskId/users`
 - `PUT /api/tasks/:taskId`
 - `DELETE /api/tasks/:taskId`
+- `DELETE /api/tasks/:taskId/users/:userId`
 - `PATCH /api/tasks/:taskId/status`
 - `POST /api/tasks/:taskId/assign`
 - `GET /api/tasks/filter`
 
+### Autenticación y dashboard
+- `POST /api/auth/login`
+- `GET /api/dashboard`
+
 ## 🔁 Relación usuarios-tareas
 
 Las tareas ahora soportan asignación múltiple mediante el campo `assignedUserIds`, lo que permite que una misma tarea pertenezca a varios usuarios al mismo tiempo.
+
+## 🔐 Acceso de prueba
+
+El proyecto incluye un usuario administrador en la semilla inicial:
+
+- `email`: `carlos.ramirez@email.com`
+- `password`: `Admin12345`
+
+Los demás usuarios cargados desde `db.json` tienen como contraseña:
+
+- `User12345`
 
 ## ⚙️ Cómo ejecutar el servidor
 1. Asegúrate de tener Node.js instalado (versión 18+ recomendada).
