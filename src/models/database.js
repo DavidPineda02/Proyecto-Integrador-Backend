@@ -1,21 +1,4 @@
-import { readFileSync } from 'node:fs';
-
-// Carga los datos iniciales desde db.json.
-const loadSeedData = () => {
-    try {
-        const databaseFile = new URL('../../db.json', import.meta.url);
-        const fileContent = readFileSync(databaseFile, 'utf-8');
-
-        return JSON.parse(fileContent);
-    } catch (error) {
-        return {
-            users: [],
-            tasks: []
-        };
-    }
-};
-
-const seedData = loadSeedData();
+import { seedData } from '../data/store.js';
 
 // Normaliza los usuarios cargados desde la semilla.
 const normalizeUser = (user) => {

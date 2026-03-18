@@ -7,15 +7,18 @@ Este repositorio contiene un servidor Express inicial con rutas de ejemplo que s
 
 ## 🗂️ Estructura del proyecto
 ```
-├── db.json                 # archivo de datos simulado (aún vacío)
 ├── package.json
 ├── readme.md               # este documento
 └── src/
+    ├── data/
+    │   └── store.js        # datos iniciales en memoria con arrays y objetos
     ├── main.js             # punto de entrada de la aplicación
     ├── controllers/        # lógica HTTP por módulo
     ├── models/             # acceso a datos en memoria y reglas de negocio
     └── routes/             # definición de endpoints
 ```
+
+> Los datos simulados del proyecto se cargan desde `src/data/store.js`, sin depender de `db.json`.
 
 ## 🔌 Endpoints disponibles
 
