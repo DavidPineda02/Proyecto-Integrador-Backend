@@ -11,16 +11,21 @@ const normalizeQueryValue = (value, { lowerCase = false } = {}) => {
 
     return lowerCase ? normalizedValue.toLowerCase() : normalizedValue;
 };
+
 export const filterTasks = async (req, res) => {
     try {
         const userId = normalizeQueryValue(req.query.userId ?? req.query.user ?? req.query.usuario);
         const status = normalizeQueryValue(req.query.status ?? req.query.estado, { lowerCase: true });
         const priority = normalizeQueryValue(req.query.priority ?? req.query.prioridad, { lowerCase: true });
+        const dateFrom = normalizeQueryValue(req.query.dateFrom ?? req.query.startDate ?? req.query.fechaInicio);
+        const dateTo = normalizeQueryValue(req.query.dateTo ?? req.query.endDate ?? req.query.fechaFin);
 
         const tasks = await TaskModel.filter({
             userId,
             status,
-            priority
+            priority,
+            dateFrom,
+            dateTo
         });
 
         res.status(200).json({
@@ -30,7 +35,9 @@ export const filterTasks = async (req, res) => {
             filters: {
                 userId: userId || null,
                 status: status || null,
-                priority: priority || null
+                priority: priority || null,
+                dateFrom: dateFrom || null,
+                dateTo: dateTo || null
             },
             count: tasks.length
         });

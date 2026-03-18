@@ -27,6 +27,8 @@ const normalizeUser = (user) => {
         lastName: user.lastName?.trim(),
         email: user.email?.trim().toLowerCase(),
         status: user.status?.trim().toLowerCase() || 'activo',
+        role: user.role?.trim().toLowerCase() || 'usuario',
+        password: user.password || 'User12345',
         createdAt: user.createdAt || timestamp,
         updatedAt: user.updatedAt || timestamp
     };
@@ -40,7 +42,9 @@ const normalizeTask = (task) => {
         id: String(task.id).trim(),
         title: task.title?.trim(),
         description: task.description?.trim() || '',
-        status: task.status?.trim().toLowerCase() || 'pendiente',
+        status: task.status?.trim().toLowerCase() === 'en curso'
+            ? 'en progreso'
+            : task.status?.trim().toLowerCase() || 'pendiente',
         priority: task.priority?.trim().toLowerCase() || 'media',
         assignedUserIds: Array.isArray(task.assignedUserIds)
             ? [...new Set(task.assignedUserIds.map((userId) => String(userId).trim()).filter(Boolean))]

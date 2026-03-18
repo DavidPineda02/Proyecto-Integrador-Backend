@@ -2,6 +2,7 @@ import { createModelError } from '../errors.js';
 
 // Estados permitidos para las cuentas de usuario.
 export const VALID_USER_STATUSES = ['activo', 'inactivo', 'suspendido', 'eliminado'];
+export const VALID_USER_ROLES = ['admin', 'usuario'];
 
 // Valida el formato basico del correo.
 export const validateEmail = (email) => {
@@ -28,6 +29,14 @@ export const normalizeUserPayload = (userData) => {
 
     if (userData.status !== undefined) {
         normalizedData.status = userData.status?.trim().toLowerCase();
+    }
+
+    if (userData.role !== undefined) {
+        normalizedData.role = userData.role?.trim().toLowerCase();
+    }
+
+    if (userData.password !== undefined) {
+        normalizedData.password = String(userData.password).trim();
     }
 
     return normalizedData;
@@ -65,5 +74,21 @@ export const validateUserPayload = (userData, { partial = false } = {}) => {
         throw createModelError('Estado inválido. Debe ser: activo, inactivo, suspendido o eliminado');
     }
 
+    if (normalizedData.role !== undefined && !VALID_USER_ROLES.includes(normalizedData.role)) {
+        throw createModelError('Rol inválido. Debe ser: admin o usuario');
+    }
+
+    if (normalizedData.password !== undefined && !normalizedData.password) {
+        throw createModelError('El password no puede estar vacío');
+    }
+
     return normalizedData;
 };
+
+export const sanitizeUser = (user) => {
+    const { password, ...safeUser } = user;
+
+    return safeUser;
+};
+
+export const sanitizeUsers = (users) => users.map(sanitizeUser);

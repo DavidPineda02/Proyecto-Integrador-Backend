@@ -1,4 +1,5 @@
 import { UserModel } from '../../models/index.models.js';
+import { sanitizeUsers } from '../../models/users/helpers.js';
 import { sendErrorResponse } from '../utils.js';
 export const getAll = async (req, res) => {
     try {
@@ -7,7 +8,7 @@ export const getAll = async (req, res) => {
         res.status(200).json({
             success: true,
             message: 'Usuarios obtenidos exitosamente',
-            data: users,
+            data: sanitizeUsers(users),
             count: users.length
         });
     } catch (error) {

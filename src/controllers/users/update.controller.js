@@ -1,21 +1,24 @@
 import { UserModel } from '../../models/index.models.js';
+import { sanitizeUser } from '../../models/users/helpers.js';
 import { sendErrorResponse } from '../utils.js';
 export const update = async (req, res) => {
     try {
         const { userId } = req.params;
-        const { firstName, lastName, email, status } = req.body;
+        const { firstName, lastName, email, status, role, password } = req.body;
 
         const updatedUser = await UserModel.update(userId, {
             firstName,
             lastName,
             email,
-            status
+            status,
+            role,
+            password
         });
 
         res.status(200).json({
             success: true,
             message: 'Usuario actualizado exitosamente',
-            data: updatedUser
+            data: sanitizeUser(updatedUser)
         });
     } catch (error) {
         console.error('Error al actualizar usuario:', error);

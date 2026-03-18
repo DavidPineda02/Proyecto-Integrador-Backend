@@ -16,6 +16,8 @@ export const createModel = async (userData) => {
         id: generateUserId(),
         ...normalizedData,
         status: normalizedData.status || 'activo',
+        role: normalizedData.role || 'usuario',
+        password: normalizedData.password || 'User12345',
         createdAt: timestamp,
         updatedAt: timestamp
     };

@@ -1,4 +1,5 @@
 import { UserModel } from '../../models/index.models.js';
+import { sanitizeUser } from '../../models/users/helpers.js';
 import { sendErrorResponse } from '../utils.js';
 export const getById = async (req, res) => {
     try {
@@ -16,7 +17,7 @@ export const getById = async (req, res) => {
         res.status(200).json({
             success: true,
             message: 'Usuario obtenido exitosamente',
-            data: user
+            data: sanitizeUser(user)
         });
     } catch (error) {
         console.error('Error al obtener usuario:', error);
