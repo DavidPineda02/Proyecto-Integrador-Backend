@@ -1,8 +1,18 @@
 import { createModelError } from '../errors.js';
 
 // Estados y prioridades permitidas para las tareas.
-export const VALID_TASK_STATUSES = ['pendiente', 'en curso', 'completada'];
+export const VALID_TASK_STATUSES = ['pendiente', 'en progreso', 'completada'];
 export const VALID_TASK_PRIORITIES = ['baja', 'media', 'alta'];
+
+export const normalizeTaskStatus = (status) => {
+    const normalizedStatus = status?.trim().toLowerCase();
+
+    if (normalizedStatus === 'en curso') {
+        return 'en progreso';
+    }
+
+    return normalizedStatus;
+};
 
 const normalizeStringField = (value) => {
     if (typeof value !== 'string') {
@@ -25,7 +35,7 @@ export const normalizeTaskPayload = (taskData) => {
     }
 
     if (taskData.status !== undefined) {
-        normalizedData.status = normalizeStringField(taskData.status)?.toLowerCase();
+        normalizedData.status = normalizeTaskStatus(normalizeStringField(taskData.status));
     }
 
     if (taskData.priority !== undefined) {
@@ -69,7 +79,7 @@ export const validateTaskPayload = (taskData, { partial = false } = {}) => {
     }
 
     if (normalizedData.status !== undefined && !VALID_TASK_STATUSES.includes(normalizedData.status)) {
-        throw createModelError('Estado inválido. Debe ser: pendiente, en curso o completada');
+        throw createModelError('Estado inválido. Debe ser: pendiente, en progreso o completada');
     }
 
     if (normalizedData.priority !== undefined && !VALID_TASK_PRIORITIES.includes(normalizedData.priority)) {

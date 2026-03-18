@@ -3,6 +3,8 @@
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import routesAuth from './routes/auth.routes.js';
+import routesDashboard from './routes/dashboard.routes.js';
 import routesUsers from './routes/users.routes.js';
 import routesTasks from './routes/tasks.routes.js';
 
@@ -12,6 +14,8 @@ const PORT = 3000;
 // Middleware para parsear bodies JSON
 app.use(express.json());
 
+app.use('/api', routesAuth);
+app.use('/api', routesDashboard);
 app.use('/api', routesUsers);
 app.use('/api', routesTasks);
 
