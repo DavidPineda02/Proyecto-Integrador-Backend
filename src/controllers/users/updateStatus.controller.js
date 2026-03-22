@@ -1,4 +1,5 @@
 import { TaskModel, UserModel } from '../../models/index.models.js';
+import { sanitizeUser } from '../../models/users/helpers.js';
 import { sendErrorResponse } from '../utils.js';
 export const updateStatus = async (req, res) => {
     try {
@@ -22,7 +23,7 @@ export const updateStatus = async (req, res) => {
         res.status(200).json({
             success: true,
             message: 'Estado del usuario actualizado exitosamente',
-            data: updatedUser
+            data: sanitizeUser(updatedUser)
         });
     } catch (error) {
         console.error('Error al actualizar estado del usuario:', error);

@@ -1,11 +1,11 @@
 import { tasksDatabase } from '../database.js';
 import { createModelError } from '../errors.js';
-import { VALID_TASK_STATUSES } from './helpers.js';
+import { normalizeTaskStatus, VALID_TASK_STATUSES } from './helpers.js';
 export const updateTaskStatusModel = async (id, status) => {
-    const normalizedStatus = status?.trim().toLowerCase();
+    const normalizedStatus = normalizeTaskStatus(status);
 
     if (!VALID_TASK_STATUSES.includes(normalizedStatus)) {
-        throw createModelError('Estado inválido. Debe ser: pendiente, en curso o completada');
+        throw createModelError('Estado inválido. Debe ser: pendiente, en progreso o completada');
     }
 
     const taskIndex = tasksDatabase.findIndex((task) => task.id === id);

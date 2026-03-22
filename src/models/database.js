@@ -1,21 +1,4 @@
-import { readFileSync } from 'node:fs';
-
-// Carga los datos iniciales desde db.json.
-const loadSeedData = () => {
-    try {
-        const databaseFile = new URL('../../db.json', import.meta.url);
-        const fileContent = readFileSync(databaseFile, 'utf-8');
-
-        return JSON.parse(fileContent);
-    } catch (error) {
-        return {
-            users: [],
-            tasks: []
-        };
-    }
-};
-
-const seedData = loadSeedData();
+import { seedData } from '../data/store.js';
 
 // Normaliza los usuarios cargados desde la semilla.
 const normalizeUser = (user) => {
@@ -27,6 +10,8 @@ const normalizeUser = (user) => {
         lastName: user.lastName?.trim(),
         email: user.email?.trim().toLowerCase(),
         status: user.status?.trim().toLowerCase() || 'activo',
+        role: user.role?.trim().toLowerCase() || 'usuario',
+        password: user.password || 'User12345',
         createdAt: user.createdAt || timestamp,
         updatedAt: user.updatedAt || timestamp
     };
@@ -40,7 +25,9 @@ const normalizeTask = (task) => {
         id: String(task.id).trim(),
         title: task.title?.trim(),
         description: task.description?.trim() || '',
-        status: task.status?.trim().toLowerCase() || 'pendiente',
+        status: task.status?.trim().toLowerCase() === 'en curso'
+            ? 'en progreso'
+            : task.status?.trim().toLowerCase() || 'pendiente',
         priority: task.priority?.trim().toLowerCase() || 'media',
         assignedUserIds: Array.isArray(task.assignedUserIds)
             ? [...new Set(task.assignedUserIds.map((userId) => String(userId).trim()).filter(Boolean))]

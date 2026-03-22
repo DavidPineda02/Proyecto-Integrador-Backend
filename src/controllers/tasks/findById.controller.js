@@ -12,6 +12,16 @@ export const getTaskById = async (req, res) => {
             });
         }
 
+        const isAdmin = req.user?.role === 'admin';
+        const isAssignedUser = task.assignedUserIds.includes(req.user?.id);
+
+        if (!isAdmin && !isAssignedUser) {
+            return res.status(403).json({
+                success: false,
+                message: 'No tiene permisos para consultar esta tarea'
+            });
+        }
+
         res.status(200).json({
             success: true,
             message: 'Tarea obtenida exitosamente',

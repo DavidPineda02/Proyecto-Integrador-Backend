@@ -1,0 +1,77 @@
+// Datos iniciales en memoria para usuarios y tareas.
+export const seedData = {
+    users: [
+        {
+            id: '1000000001',
+            firstName: 'Carlos',
+            lastName: 'Ramirez',
+            email: 'carlos.ramirez@email.com',
+            role: 'admin',
+            password: 'Admin12345'
+        },
+        {
+            id: '1000000002',
+            firstName: 'Laura',
+            lastName: 'Gomez',
+            email: 'laura.gomez@email.com',
+            password: 'User12345'
+        },
+        {
+            id: '1000000003',
+            firstName: 'Andres',
+            lastName: 'Martinez',
+            email: 'andres.martinez@email.com',
+            password: 'User12345'
+        },
+        {
+            id: '1000000004',
+            firstName: 'Sofia',
+            lastName: 'Lopez',
+            email: 'sofia.lopez@email.com',
+            password: 'User12345'
+        },
+        {
+            id: '1000000005',
+            firstName: 'Miguel',
+            lastName: 'Torres',
+            email: 'miguel.torres@email.com',
+            password: 'User12345'
+        },
+        {
+            id: '1000000006',
+            firstName: 'Valentina',
+            lastName: 'Hernandez',
+            email: 'valentina.hernandez@email.com',
+            password: 'User12345'
+        },
+        {
+            id: '1000000007',
+            firstName: 'Juan',
+            lastName: 'Castro',
+            email: 'juan.castro@email.com',
+            password: 'User12345'
+        },
+        {
+            id: '1000000008',
+            firstName: 'Camila',
+            lastName: 'Rojas',
+            email: 'camila.rojas@email.com',
+            password: 'User12345'
+        },
+        {
+            id: '1000000009',
+            firstName: 'Daniel',
+            lastName: 'Morales',
+            email: 'daniel.morales@email.com',
+            password: 'User12345'
+        },
+        {
+            id: '1000000010',
+            firstName: 'Paula',
+            lastName: 'Vargas',
+            email: 'paula.vargas@email.com',
+            password: 'User12345'
+        }
+    ],
+    tasks: []
+};

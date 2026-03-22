@@ -1,4 +1,5 @@
 import { TaskModel, UserModel } from '../../models/index.models.js';
+import { sanitizeUser } from '../../models/users/helpers.js';
 import { sendErrorResponse } from '../utils.js';
 export const getUserTasks = async (req, res) => {
     try {
@@ -12,13 +13,23 @@ export const getUserTasks = async (req, res) => {
             });
         }
 
+        const isAdmin = req.user?.role === 'admin';
+        const isSameUser = req.user?.id === userId;
+
+        if (!isAdmin && !isSameUser) {
+            return res.status(403).json({
+                success: false,
+                message: 'No tiene permisos para consultar estas tareas'
+            });
+        }
+
         const tasks = await TaskModel.findByUserId(userId);
 
         res.status(200).json({
             success: true,
             message: 'Tareas del usuario obtenidas exitosamente',
             data: tasks,
-            user,
+            user: sanitizeUser(user),
             count: tasks.length
         });
     } catch (error) {
