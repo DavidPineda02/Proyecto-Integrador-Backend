@@ -1,6 +1,7 @@
 // Punto de entrada de la API.
 // Se exporta app para poder reutilizarla en pruebas.
 import express from 'express';
+import "./config/db.js";
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import routesAuth from './routes/auth.routes.js';
@@ -9,7 +10,7 @@ import routesUsers from './routes/users.routes.js';
 import routesTasks from './routes/tasks.routes.js';
 
 export const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const ALLOWED_ORIGINS = new Set([
     'http://localhost:5173',
     'http://127.0.0.1:5173'
@@ -46,6 +47,6 @@ const entryFilePath = process.argv[1] ? path.resolve(process.argv[1]) : null;
 
 if (entryFilePath === currentFilePath) {
     app.listen(PORT, () => {
-        console.log(`backend escuchando en el puerto ${PORT}`);
+        console.log(`Backend ejecutandose en el puerto ${PORT}`);
     });
 }
