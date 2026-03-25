@@ -62,6 +62,17 @@ Los demás usuarios cargados desde `src/data/store.js` tienen como contraseña:
 
 - `User12345`
 
+## 🔗 Integración local con el frontend
+
+El backend está preparado para recibir peticiones desde el frontend local en:
+
+- `http://localhost:5173`
+- `http://127.0.0.1:5173`
+
+Se habilitan los headers necesarios para `Authorization`, `Content-Type` y las
+peticiones `OPTIONS` que requiere el navegador antes de consumir rutas
+protegidas.
+
 ## ⚙️ Cómo ejecutar el servidor
 1. Asegúrate de tener Node.js instalado (versión 18+ recomendada).
 2. Desde el directorio raíz del proyecto, instala dependencias si es necesario:
@@ -74,9 +85,27 @@ Los demás usuarios cargados desde `src/data/store.js` tienen como contraseña:
    ```
 4. El servidor escuchará en el puerto **3000**. Prueba los endpoints con tu navegador o `curl`:
    ```bash
-   curl http://localhost:3000/users
-   curl -X POST http://localhost:3000/tasks
+   curl -X POST http://localhost:3000/api/auth/login \
+     -H "Content-Type: application/json" \
+     -d '{"email":"carlos.ramirez@email.com","password":"Admin12345"}'
+
+   curl http://localhost:3000/api/users \
+     -H "Authorization: Bearer <TOKEN>"
    ```
+
+## 🖥️ Flujo recomendado junto al frontend
+
+1. Inicia este backend:
+   ```bash
+   npm install
+   node src/main.js
+   ```
+2. En `Proyecto-Integrador-Frontend`, ejecuta:
+   ```bash
+   npm install
+   npm run dev
+   ```
+3. Abre `http://localhost:5173` e inicia sesión con las credenciales de prueba.
 
 ---
 
