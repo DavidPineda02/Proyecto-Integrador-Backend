@@ -6,11 +6,11 @@ import "dotenv/config";
 // Creamos un "Pool" de conexiones.
 // Es mucho más eficiente que abrir y cerrar una conexión por cada consulta.
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
+  host: process.env.DB_HOST || "localhost",
   user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "tasks_manager_group3",
+  port: Number(process.env.DB_PORT || 3306),
   waitForConnections: true,
   connectionLimit: 10, // Máximo de conexiones simultáneas
   queueLimit: 0,
