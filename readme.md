@@ -1,28 +1,127 @@
 # Task Manager Backend
 
-Proyecto de prueba para **GFPI-F-135 V04** que establece una API básica de gestión de usuarios y tareas.
+Backend del proyecto integrador para la gestión de usuarios y tareas. Expone una
+API REST con autenticación, dashboard administrativo, gestión de usuarios,
+gestión de tareas y asignación múltiple de usuarios por tarea.
 
-## 📌 Propósito
-Este repositorio contiene un servidor Express inicial con rutas de ejemplo que servirán como base para un gestor de tareas. La idea es validar la arquitectura y la estructura del proyecto sin lógica de negocio compleja ni base de datos.
+## Propósito
 
-## 🗂️ Estructura del proyecto
-```
+Este proyecto funciona como la capa backend del gestor de tareas. La API está
+construida con Express y actualmente usa MySQL como capa de persistencia para:
+
+- autenticación de usuarios
+- consulta de dashboard
+- CRUD de usuarios
+- CRUD de tareas
+- asignaciones entre tareas y usuarios
+
+## Tecnologías
+
+- Node.js
+- Express
+- MySQL
+- mysql2
+- dotenv
+
+## Estructura del proyecto
+
+```text
+├── database.sql          # esquema principal y datos iniciales
+├── database-user.sql     # usuario de aplicación para MySQL
 ├── package.json
-├── readme.md               # este documento
+├── readme.md
 └── src/
-    ├── data/
-    │   └── store.js        # datos iniciales en memoria con arrays y objetos
-    ├── main.js             # punto de entrada de la aplicación
-    ├── controllers/        # lógica HTTP por módulo
-    ├── models/             # acceso a datos en memoria y reglas de negocio
-    └── routes/             # definición de endpoints
+    ├── config/           # configuración de conexión y variables de entorno
+    ├── controllers/      # lógica HTTP
+    ├── middlewares/      # autenticación y autorización
+    ├── models/           # acceso a datos y reglas de negocio
+    ├── routes/           # endpoints de la API
+    └── main.js           # punto de entrada del servidor
 ```
 
-> Los datos simulados del proyecto se cargan desde `src/data/store.js`, sin depender de `db.json`.
+## Configuración de base de datos
 
-## 🔌 Endpoints disponibles
+La base esperada por el proyecto es:
+
+- base de datos: `tasks_manager_group3`
+- usuario de aplicación: `task_manager_app`
+- puerto por defecto: `3306`
+
+### 1. Crear la base y las tablas
+
+Desde la raíz del proyecto ejecuta:
+
+```bash
+mysql -uroot -p < database.sql
+```
+
+### 2. Crear el usuario de aplicación
+
+```bash
+mysql -uroot -p < database-user.sql
+```
+
+El script crea este usuario local:
+
+- `DB_USER=task_manager_app`
+- `DB_PASSWORD=TaskManager123!`
+
+## Variables de entorno
+
+Usa `.env.example` como base para crear tu archivo `.env`.
+
+Ejemplo:
+
+```env
+PORT=3000
+DB_HOST=localhost
+DB_USER=task_manager_app
+DB_PASSWORD=TaskManager123!
+DB_NAME=tasks_manager_group3
+DB_PORT=3306
+```
+
+## Instalación y ejecución
+
+1. Instala dependencias:
+   ```bash
+   npm install
+   ```
+2. Crea tu archivo `.env` con la configuración de MySQL.
+3. Levanta el servidor:
+   ```bash
+   npm run dev
+   ```
+
+También puedes iniciarlo sin nodemon:
+
+```bash
+node src/main.js
+```
+
+El backend queda disponible en:
+
+```text
+http://localhost:3000
+```
+
+## Integración local con el frontend
+
+El backend está preparado para recibir peticiones desde el frontend local en:
+
+- `http://localhost:5173`
+- `http://127.0.0.1:5173`
+
+Se habilitan los headers necesarios para:
+
+- `Authorization`
+- `Content-Type`
+- peticiones `OPTIONS`
+
+## Endpoints disponibles
 
 ### Usuarios
+
 - `POST /api/users`
 - `GET /api/users`
 - `GET /api/users/:userId`
@@ -32,6 +131,7 @@ Este repositorio contiene un servidor Express inicial con rutas de ejemplo que s
 - `GET /api/users/:userId/tasks`
 
 ### Tareas
+
 - `POST /api/tasks`
 - `GET /api/tasks`
 - `GET /api/tasks/:taskId`
@@ -44,70 +144,59 @@ Este repositorio contiene un servidor Express inicial con rutas de ejemplo que s
 - `GET /api/tasks/filter`
 
 ### Autenticación y dashboard
+
 - `POST /api/auth/login`
 - `GET /api/dashboard`
 
-## 🔁 Relación usuarios-tareas
+## Credenciales de prueba
 
-Las tareas ahora soportan asignación múltiple mediante el campo `assignedUserIds`, lo que permite que una misma tarea pertenezca a varios usuarios al mismo tiempo.
-
-## 🔐 Acceso de prueba
-
-El proyecto incluye un usuario administrador en la semilla inicial:
+Administrador:
 
 - `email`: `carlos.ramirez@email.com`
 - `password`: `Admin12345`
 
-Los demás usuarios cargados desde `src/data/store.js` tienen como contraseña:
+Usuarios estándar:
 
-- `User12345`
+- usa cualquiera de los correos insertados en `database.sql`
+- `password`: `User12345`
 
-## 🔗 Integración local con el frontend
+## Prueba rápida del API
 
-El backend está preparado para recibir peticiones desde el frontend local en:
+### Login
 
-- `http://localhost:5173`
-- `http://127.0.0.1:5173`
+```bash
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"carlos.ramirez@email.com","password":"Admin12345"}'
+```
 
-Se habilitan los headers necesarios para `Authorization`, `Content-Type` y las
-peticiones `OPTIONS` que requiere el navegador antes de consumir rutas
-protegidas.
+### Consultar usuarios con token
 
-## ⚙️ Cómo ejecutar el servidor
-1. Asegúrate de tener Node.js instalado (versión 18+ recomendada).
-2. Desde el directorio raíz del proyecto, instala dependencias si es necesario:
+```bash
+curl http://localhost:3000/api/users \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+## Flujo recomendado junto al frontend
+
+1. En este proyecto:
    ```bash
    npm install
+   npm run dev
    ```
-3. Inicia el servidor:
-   ```bash
-   node src/main.js
-   ```
-4. El servidor escuchará en el puerto **3000**. Prueba los endpoints con tu navegador o `curl`:
-   ```bash
-   curl -X POST http://localhost:3000/api/auth/login \
-     -H "Content-Type: application/json" \
-     -d '{"email":"carlos.ramirez@email.com","password":"Admin12345"}'
-
-   curl http://localhost:3000/api/users \
-     -H "Authorization: Bearer <TOKEN>"
-   ```
-
-## 🖥️ Flujo recomendado junto al frontend
-
-1. Inicia este backend:
-   ```bash
-   npm install
-   node src/main.js
-   ```
-2. En `Proyecto-Integrador-Frontend`, ejecuta:
+2. En `Proyecto-Integrador-Frontend`:
    ```bash
    npm install
    npm run dev
    ```
 3. Abre `http://localhost:5173` e inicia sesión con las credenciales de prueba.
 
----
+## Notas funcionales
+
+- Las tareas soportan asignación múltiple mediante la tabla `task_users`.
+- El estado de la tarea es global por tarea, no individual por usuario.
+- Si un usuario asignado cambia el estado a `completada`, los demás verán la
+  misma tarea como `completada`.
 
 ## Integrantes
 
