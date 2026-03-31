@@ -1,5 +1,5 @@
-import { tasksDatabase } from '../database.js';
 import { createModelError } from '../errors.js';
+import { formatDateForSQL, queryTaskRows } from '../database.js';
 import { normalizeTaskStatus } from './helpers.js';
 
 const normalizeDateBoundary = (value, { endOfDay = false } = {}) => {
@@ -29,14 +29,43 @@ export const filterTasksModel = async ({ userId, status, priority, dateFrom, dat
         throw createModelError('La fecha inicial no puede ser mayor que la fecha final');
     }
 
-    return tasksDatabase.filter((task) => {
-        const matchesUser = userId ? task.assignedUserIds.includes(userId) : true;
-        const matchesStatus = normalizedStatus ? task.status === normalizedStatus : true;
-        const matchesPriority = priority ? task.priority === priority : true;
-        const createdAt = new Date(task.createdAt);
-        const matchesDateFrom = parsedDateFrom ? createdAt >= parsedDateFrom : true;
-        const matchesDateTo = parsedDateTo ? createdAt <= parsedDateTo : true;
+    const whereClauses = ['1=1'];
+    const params = [];
 
-        return matchesUser && matchesStatus && matchesPriority && matchesDateFrom && matchesDateTo;
+    if (userId) {
+        whereClauses.push(`
+            EXISTS (
+                SELECT 1
+                FROM task_users tu_filter
+                WHERE tu_filter.task_id = t.id
+                  AND tu_filter.user_id = ?
+            )
+        `);
+        params.push(userId);
+    }
+
+    if (normalizedStatus) {
+        whereClauses.push('t.status = ?');
+        params.push(normalizedStatus);
+    }
+
+    if (priority) {
+        whereClauses.push('t.priority = ?');
+        params.push(priority);
+    }
+
+    if (parsedDateFrom) {
+        whereClauses.push('t.createdAt >= ?');
+        params.push(formatDateForSQL(parsedDateFrom));
+    }
+
+    if (parsedDateTo) {
+        whereClauses.push('t.createdAt <= ?');
+        params.push(formatDateForSQL(parsedDateTo));
+    }
+
+    return queryTaskRows({
+        whereSql: whereClauses.join(' AND '),
+        params
     });
 };

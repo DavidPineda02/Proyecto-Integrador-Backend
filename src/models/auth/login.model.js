@@ -1,5 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
-import { usersDatabase } from '../database.js';
+import { findUserByEmailInDb, findUserByIdInDb } from '../database.js';
 import { createModelError } from '../errors.js';
 
 const AUTH_SECRET = 'task-manager-secret';
@@ -29,8 +29,6 @@ const createAuthToken = (user) => {
     return `${header}.${payload}.${signature}`;
 };
 
-const findUserByEmail = (email) => usersDatabase.find((user) => user.email === email);
-
 export const loginModel = async ({ email, password }) => {
     const normalizedEmail = email?.trim().toLowerCase();
     const normalizedPassword = password?.trim();
@@ -39,7 +37,7 @@ export const loginModel = async ({ email, password }) => {
         throw createModelError('Email y password son requeridos');
     }
 
-    const user = findUserByEmail(normalizedEmail);
+    const user = await findUserByEmailInDb(normalizedEmail);
 
     if (!user || user.password !== normalizedPassword) {
         throw createModelError('Credenciales inválidas', 401);
@@ -95,7 +93,7 @@ export const verifyTokenModel = async (token) => {
         throw createModelError('Token expirado o inválido', 401);
     }
 
-    const user = usersDatabase.find((currentUser) => currentUser.id === parsedPayload.sub);
+    const user = await findUserByIdInDb(parsedPayload.sub);
 
     if (!user) {
         throw createModelError('Usuario no encontrado para el token', 401);

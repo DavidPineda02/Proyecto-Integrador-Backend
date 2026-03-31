@@ -1,32 +1,43 @@
-import { usersDatabase } from './database.js';
+import pool, {
+    findUserByEmailInDb,
+    findUserByIdInDb,
+    formatDateForSQL
+} from '../database.js';
 import { createModelError } from '../errors.js';
 import { validateUserPayload } from './helpers.js';
-export const updateModel = async (id, userData) => {
-    const userIndex = usersDatabase.findIndex((user) => user.id === id);
 
-    if (userIndex === -1) {
+export const updateModel = async (id, userData) => {
+    const existingUser = await findUserByIdInDb(id);
+
+    if (!existingUser) {
         throw createModelError('Usuario no encontrado', 404);
     }
 
     const normalizedData = validateUserPayload(userData, { partial: true });
 
     if (normalizedData.email) {
-        const existingUser = usersDatabase.find(
-            (user) => user.email === normalizedData.email && user.id !== id
-        );
+        const duplicatedUser = await findUserByEmailInDb(normalizedData.email);
 
-        if (existingUser) {
+        if (duplicatedUser && duplicatedUser.id !== id) {
             throw createModelError('El email ya existe');
         }
     }
 
-    const updatedUser = {
-        ...usersDatabase[userIndex],
-        ...normalizedData,
-        updatedAt: new Date().toISOString()
-    };
+    const fieldsToUpdate = [];
+    const values = [];
 
-    usersDatabase[userIndex] = updatedUser;
+    Object.entries(normalizedData).forEach(([field, value]) => {
+        fieldsToUpdate.push(`${field} = ?`);
+        values.push(value);
+    });
 
-    return updatedUser;
+    fieldsToUpdate.push('updatedAt = ?');
+    values.push(formatDateForSQL(), id);
+
+    await pool.query(
+        `UPDATE users SET ${fieldsToUpdate.join(', ')} WHERE id = ?`,
+        values
+    );
+
+    return findUserByIdInDb(id);
 };

@@ -1,4 +1,5 @@
-import { usersDatabase } from './database.js';
+import { findUserByIdInDb } from '../database.js';
+
 export const findByIdModel = async (id) => {
-    return usersDatabase.find((user) => user.id === id);
+    return findUserByIdInDb(id);
 };

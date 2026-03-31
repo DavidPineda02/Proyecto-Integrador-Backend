@@ -1,2 +1,2 @@
-// Reexport para mantener la estructura del modulo de usuarios.
-export { usersDatabase } from '../database.js';
+// Reexport de helpers de base de datos para el modulo de usuarios.
+export { findUserByEmailInDb, findUserByIdInDb } from '../database.js';

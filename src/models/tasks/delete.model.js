@@ -1,14 +1,14 @@
-import { tasksDatabase } from '../database.js';
+import pool, { findTaskByIdInDb } from '../database.js';
 import { createModelError } from '../errors.js';
-export const deleteTaskModel = async (id) => {
-    const taskIndex = tasksDatabase.findIndex((task) => task.id === id);
 
-    if (taskIndex === -1) {
+export const deleteTaskModel = async (id) => {
+    const existingTask = await findTaskByIdInDb(id);
+
+    if (!existingTask) {
         throw createModelError('Tarea no encontrada', 404);
     }
 
-    const deletedTask = tasksDatabase[taskIndex];
-    tasksDatabase.splice(taskIndex, 1);
+    await pool.query('DELETE FROM tasks WHERE id = ?', [id]);
 
-    return deletedTask;
+    return existingTask;
 };

@@ -1,6 +1,7 @@
-import { usersDatabase } from './database.js';
+import pool, { findUserByIdInDb, formatDateForSQL } from '../database.js';
 import { createModelError } from '../errors.js';
 import { VALID_USER_STATUSES } from './helpers.js';
+
 export const updateStatusModel = async (id, status) => {
     const normalizedStatus = status?.trim().toLowerCase();
 
@@ -8,14 +9,16 @@ export const updateStatusModel = async (id, status) => {
         throw createModelError('Estado inválido. Debe ser: activo, inactivo, suspendido o eliminado');
     }
 
-    const userIndex = usersDatabase.findIndex((user) => user.id === id);
+    const existingUser = await findUserByIdInDb(id);
 
-    if (userIndex === -1) {
+    if (!existingUser) {
         throw createModelError('Usuario no encontrado', 404);
     }
 
-    usersDatabase[userIndex].status = normalizedStatus;
-    usersDatabase[userIndex].updatedAt = new Date().toISOString();
+    await pool.query(
+        'UPDATE users SET status = ?, updatedAt = ? WHERE id = ?',
+        [normalizedStatus, formatDateForSQL(), id]
+    );
 
-    return usersDatabase[userIndex];
+    return findUserByIdInDb(id);
 };

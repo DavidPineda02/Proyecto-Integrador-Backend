@@ -1,27 +1,39 @@
-import { tasksDatabase, usersDatabase } from '../database.js';
+import {
+    findTaskByIdInDb,
+    findUserByIdInDb,
+    formatDateForSQL,
+    withTransaction
+} from '../database.js';
 import { createModelError } from '../errors.js';
 
 export const removeUserFromTaskModel = async (taskId, userId) => {
-    const taskIndex = tasksDatabase.findIndex((task) => task.id === taskId);
+    const existingTask = await findTaskByIdInDb(taskId);
 
-    if (taskIndex === -1) {
+    if (!existingTask) {
         throw createModelError('Tarea no encontrada', 404);
     }
 
-    const userExists = usersDatabase.some((user) => user.id === userId);
+    const existingUser = await findUserByIdInDb(userId);
 
-    if (!userExists) {
+    if (!existingUser) {
         throw createModelError('Usuario no encontrado', 404);
     }
 
-    if (!tasksDatabase[taskIndex].assignedUserIds.includes(userId)) {
-        throw createModelError('El usuario no está asignado a esta tarea', 404);
-    }
+    await withTransaction(async (connection) => {
+        const [result] = await connection.query(
+            'DELETE FROM task_users WHERE task_id = ? AND user_id = ?',
+            [taskId, userId]
+        );
 
-    tasksDatabase[taskIndex].assignedUserIds = tasksDatabase[taskIndex].assignedUserIds.filter(
-        (assignedUserId) => assignedUserId !== userId
-    );
-    tasksDatabase[taskIndex].updatedAt = new Date().toISOString();
+        if (result.affectedRows === 0) {
+            throw createModelError('El usuario no está asignado a esta tarea', 404);
+        }
 
-    return tasksDatabase[taskIndex];
+        await connection.query(
+            'UPDATE tasks SET updatedAt = ? WHERE id = ?',
+            [formatDateForSQL(), taskId]
+        );
+    });
+
+    return findTaskByIdInDb(taskId);
 };
