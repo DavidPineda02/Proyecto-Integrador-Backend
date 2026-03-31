@@ -1,19 +1,26 @@
-import { tasksDatabase } from '../database.js';
-export const removeUserAssignmentsModel = async (userId) => {
-    let updatedTasks = 0;
+import { formatDateForSQL, withTransaction } from '../database.js';
 
-    tasksDatabase.forEach((task) => {
-        if (!task.assignedUserIds.includes(userId)) {
-            return;
+export const removeUserAssignmentsModel = async (userId) => {
+    return withTransaction(async (connection) => {
+        const [rows] = await connection.query(
+            'SELECT DISTINCT task_id FROM task_users WHERE user_id = ?',
+            [userId]
+        );
+
+        if (rows.length === 0) {
+            return 0;
         }
 
-        // Elimina al usuario de la lista de asignados de la tarea.
-        task.assignedUserIds = task.assignedUserIds.filter(
-            (assignedUserId) => assignedUserId !== userId
-        );
-        task.updatedAt = new Date().toISOString();
-        updatedTasks += 1;
-    });
+        await connection.query('DELETE FROM task_users WHERE user_id = ?', [userId]);
 
-    return updatedTasks;
+        const taskIds = rows.map((row) => String(row.task_id));
+        const placeholders = taskIds.map(() => '?').join(', ');
+
+        await connection.query(
+            `UPDATE tasks SET updatedAt = ? WHERE id IN (${placeholders})`,
+            [formatDateForSQL(), ...taskIds]
+        );
+
+        return taskIds.length;
+    });
 };

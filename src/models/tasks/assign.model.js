@@ -1,6 +1,12 @@
-import { tasksDatabase, usersDatabase } from '../database.js';
+import {
+    ensureUsersExistInDb,
+    findTaskByIdInDb,
+    formatDateForSQL,
+    withTransaction
+} from '../database.js';
 import { createModelError } from '../errors.js';
 import { validateAssignedUserIds } from './helpers.js';
+
 export const assignUsersToTaskModel = async (taskId, userIds) => {
     const normalizedUserIds = validateAssignedUserIds(userIds);
 
@@ -8,28 +14,27 @@ export const assignUsersToTaskModel = async (taskId, userIds) => {
         throw createModelError('Debe enviar al menos un ID de usuario');
     }
 
-    const taskIndex = tasksDatabase.findIndex((task) => task.id === taskId);
+    const existingTask = await findTaskByIdInDb(taskId);
 
-    if (taskIndex === -1) {
+    if (!existingTask) {
         throw createModelError('Tarea no encontrada', 404);
     }
 
-    const missingUserIds = normalizedUserIds.filter(
-        (userId) => !usersDatabase.some((user) => user.id === userId)
-    );
+    await withTransaction(async (connection) => {
+        const validUserIds = await ensureUsersExistInDb(normalizedUserIds, connection);
+        const placeholders = validUserIds.map(() => '(?, ?)').join(', ');
+        const values = validUserIds.flatMap((userId) => [taskId, userId]);
 
-    if (missingUserIds.length > 0) {
-        throw createModelError(`Usuarios no encontrados: ${missingUserIds.join(', ')}`, 404);
-    }
+        await connection.query(
+            `INSERT IGNORE INTO task_users (task_id, user_id) VALUES ${placeholders}`,
+            values
+        );
 
-    // Une los usuarios actuales con los nuevos sin repetir ids.
-    const mergedUserIds = [...new Set([
-        ...tasksDatabase[taskIndex].assignedUserIds,
-        ...normalizedUserIds
-    ])];
+        await connection.query(
+            'UPDATE tasks SET updatedAt = ? WHERE id = ?',
+            [formatDateForSQL(), taskId]
+        );
+    });
 
-    tasksDatabase[taskIndex].assignedUserIds = mergedUserIds;
-    tasksDatabase[taskIndex].updatedAt = new Date().toISOString();
-
-    return tasksDatabase[taskIndex];
+    return findTaskByIdInDb(taskId);
 };

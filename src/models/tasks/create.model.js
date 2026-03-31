@@ -1,38 +1,53 @@
-import { tasksDatabase, usersDatabase } from '../database.js';
-import { createModelError } from '../errors.js';
+import {
+    ensureUsersExistInDb,
+    findTaskByIdInDb,
+    formatDateForSQL,
+    generateEntityId,
+    withTransaction
+} from '../database.js';
 import { validateTaskPayload } from './helpers.js';
-
-const generateTaskId = () => `${Date.now()}${Math.floor(Math.random() * 1000)}`;
-// Verifica que los usuarios a asignar existan antes de crear la tarea.
-const validateUsersExist = (userIds) => {
-    const missingUserIds = userIds.filter(
-        (userId) => !usersDatabase.some((user) => user.id === userId)
-    );
-
-    if (missingUserIds.length > 0) {
-        throw createModelError(`Usuarios no encontrados: ${missingUserIds.join(', ')}`, 404);
-    }
-};
 
 export const createTaskModel = async (taskData) => {
     const normalizedData = validateTaskPayload(taskData);
-    const assignedUserIds = normalizedData.assignedUserIds || [];
+    const assignedUserIds = await ensureUsersExistInDb(normalizedData.assignedUserIds || []);
+    const taskId = generateEntityId();
+    const timestamp = formatDateForSQL();
 
-    validateUsersExist(assignedUserIds);
+    await withTransaction(async (connection) => {
+        await connection.query(
+            `
+                INSERT INTO tasks (
+                    id,
+                    title,
+                    description,
+                    status,
+                    priority,
+                    createdAt,
+                    updatedAt
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            `,
+            [
+                taskId,
+                normalizedData.title,
+                normalizedData.description || '',
+                normalizedData.status || 'pendiente',
+                normalizedData.priority || 'media',
+                timestamp,
+                timestamp
+            ]
+        );
 
-    const timestamp = new Date().toISOString();
-    const newTask = {
-        id: generateTaskId(),
-        title: normalizedData.title,
-        description: normalizedData.description || '',
-        status: normalizedData.status || 'pendiente',
-        priority: normalizedData.priority || 'media',
-        assignedUserIds,
-        createdAt: timestamp,
-        updatedAt: timestamp
-    };
+        if (assignedUserIds.length > 0) {
+            const placeholders = assignedUserIds.map(() => '(?, ?)').join(', ');
+            const values = assignedUserIds.flatMap((userId) => [taskId, userId]);
 
-    tasksDatabase.push(newTask);
+            await connection.query(
+                `INSERT INTO task_users (task_id, user_id) VALUES ${placeholders}`,
+                values
+            );
+        }
+    });
 
-    return newTask;
+    return findTaskByIdInDb(taskId);
 };
